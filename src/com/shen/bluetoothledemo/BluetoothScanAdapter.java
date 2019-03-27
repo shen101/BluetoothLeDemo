@@ -69,7 +69,7 @@ public class BluetoothScanAdapter extends BaseAdapter {
 	}
 
 	public String getShowAddressOrName(String input, int position) {
-		if ("".equals(input) || input.equals(null)) {
+		if ("".equals(input) || input == null) {
 			return mDates.get(position).getAddress();
 		} else {
 			return mDates.get(position).getName();
