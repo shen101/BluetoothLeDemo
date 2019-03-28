@@ -26,7 +26,7 @@
     <string name="system_text_send_edit_hint">请输入要发送的内容</string>
     <!-- scan error -->
     <string name="system_text_scan_error_one">正在扫描中无需再次扫描</string>
-    <string name="system_text_scan_error_two">由于无法注册，所以开始扫描</string>
+    <string name="system_text_scan_error_two">由于无法注册，所以无法开始扫描</string>
     <string name="system_text_scan_error_three">由于内部错误，无法开始扫描</string>
     <string name="system_text_scan_error_four">不支持低功耗扫描功能</string>
     <string name="system_text_scan_error_five">由于硬件资源不足，无法开始扫描</string>

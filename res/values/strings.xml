@@ -34,7 +34,7 @@
     <string name="unknown_blue_device">UNKNOWN</string>
     <!-- scan error -->
     <string name="system_text_scan_error_one">No need to scan again while scanning</string>
-    <string name="system_text_scan_error_two">Since the registration is not possible, the scan starts.</string>
+    <string name="system_text_scan_error_two">Unable to start scanning because I can not register</string>
     <string name="system_text_scan_error_three">Fails to start scan due an internal error</string>
     <string name="system_text_scan_error_four">Low power scan function is not supported</string>
     <string name="system_text_scan_error_five">Fails to start scan as it is out of hardware resources</string>

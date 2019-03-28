@@ -299,6 +299,9 @@ public class ClientActivity extends Activity implements OnClickListener {
 		public void onCharacteristicRead(BluetoothGatt gatt,
 				android.bluetooth.BluetoothGattCharacteristic characteristic, int status) {
 			Log.i(TAG, "onCharacteristicRead");
+			if (Utils.CHARACTERISTIC_WRITE_UUID.equals(characteristic.getUuid())) {
+				gatt.setCharacteristicNotification(characteristic, true);
+			}
 		};
 
 		@Override

@@ -215,6 +215,12 @@ public class ServerActivity extends Activity implements OnClickListener {
 					Toast.makeText(mContext, "value = " + new String(value), 1).show();
 				}
 			});
+			
+			if (Utils.CHARACTERISTIC_WRITE_UUID.equals(characteristic.getUuid())) {
+				if (responseNeeded) {
+					mGattServer.sendResponse(device, requestId, BluetoothGatt.GATT_SUCCESS, 0, value);
+				}
+			}
 		}
 	};
 
