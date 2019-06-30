@@ -1,12 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="com.shen.bluetoothledemo"
+    package="com.shen.bluetoothbledemo"
     android:versionCode="1"
-    android:versionName="1.0" >
+    android:versionName="1.1" >
 
     <uses-sdk
         android:minSdkVersion="21"
-        android:targetSdkVersion="23" />
+        android:targetSdkVersion="27" />
 
     <uses-permission android:name="android.permission.BLUETOOTH" />
     <uses-permission android:name="android.permission.BLUETOOTH_ADMIN" />
@@ -41,7 +41,7 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".ScanBluetoothDevicesActivity"
+            android:name=".HelmetScanBluetoothDevicesActivity"
             android:label="@string/system_text_devie_scan" >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -49,6 +49,13 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+
+        <service
+            android:name=".HelmetClientBleConntectService"
+            android:exported="true" />
+        <service
+            android:name=".HelmetServicetBleConntectService"
+            android:exported="true" />
     </application>
 
 </manifest>

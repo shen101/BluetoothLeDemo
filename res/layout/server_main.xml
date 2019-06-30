@@ -29,4 +29,17 @@
             android:layout_weight="1"
             android:text="@string/system_text_stop_send" />
     </LinearLayout>
+
+    <EditText
+        android:id="@+id/send_server_edit"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="@string/system_text_send_edit_hint" />
+
+    <Button
+        android:id="@+id/send_server_btn"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/system_text_send_server_btn" />
+
 </LinearLayout>

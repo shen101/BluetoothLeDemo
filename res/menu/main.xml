@@ -1,6 +1,6 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
-    tools:context="com.shen.bluetoothledemo.MainActivity" >
+    tools:context="com.shen.bluetoothbledemo.MainActivity" >
 
     <item
         android:id="@+id/action_settings"

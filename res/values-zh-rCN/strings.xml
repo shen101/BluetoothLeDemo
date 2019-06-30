@@ -31,4 +31,12 @@
     <string name="system_text_scan_error_four">不支持低功耗扫描功能</string>
     <string name="system_text_scan_error_five">由于硬件资源不足，无法开始扫描</string>
     <string name="system_text_devie_scan">蓝牙搜索</string>
+    <!-- send server -->
+    <string name="system_text_send_server_btn">发送数据</string>
+    <string name="glass_default_configation">对不起，您的手机不支持该功能</string>
+    <string name="glass_default_note">注意！</string>
+    <string name="glass_open_noti_permission_contents">请前往通知使用权限，并勾选，否则头盔端无法有效收到手机通知消息</string>
+    
+    <string name="helmet_text_bluetooth_is_no_open">蓝牙适配器未打开！</string>
+
 </resources>

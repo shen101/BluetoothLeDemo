@@ -39,5 +39,11 @@
     <string name="system_text_scan_error_four">Low power scan function is not supported</string>
     <string name="system_text_scan_error_five">Fails to start scan as it is out of hardware resources</string>
     <string name="system_text_devie_scan">Bluetooth Scan</string>
+    <!-- send server -->
+    <string name="system_text_send_server_btn">Send Data</string>
+    <string name="glass_default_configation">Sorry, this feature is not supported on your phone</string>
+    <string name="glass_default_note">Note</string>
+    <string name="glass_open_noti_permission_contents">Please go to the notification usage permission and check it, otherwise the helmet side can not receive the mobile phone notification message effectively.</string>
 
+    <string name="helmet_text_bluetooth_is_no_open">BT Adapter is not turned ON!</string>
 </resources>
