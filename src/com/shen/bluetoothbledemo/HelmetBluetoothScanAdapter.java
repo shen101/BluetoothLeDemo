@@ -2,7 +2,7 @@ package com.shen.bluetoothbledemo;
 
 import java.util.ArrayList;
 import android.annotation.SuppressLint;
-import android.bluetooth.BluetoothDevice;
+import android.bluetooth.le.ScanResult;
 import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -15,9 +15,9 @@ public class HelmetBluetoothScanAdapter extends BaseAdapter {
 
 	private LayoutInflater minflater;
 	private Context mcontext;
-	private ArrayList<BluetoothDevice> mDates = new ArrayList<BluetoothDevice>();
+	private ArrayList<ScanResult> mDates = new ArrayList<ScanResult>();
 
-	public HelmetBluetoothScanAdapter(Context mContext, ArrayList<BluetoothDevice> dates) {
+	public HelmetBluetoothScanAdapter(Context mContext, ArrayList<ScanResult> dates) {
 		super();
 		minflater = LayoutInflater.from(mContext);
 		mDates = dates;
@@ -57,8 +57,8 @@ public class HelmetBluetoothScanAdapter extends BaseAdapter {
 			mHolder = (ViewHolder) convertView.getTag();
 		}
 
-		mHolder.name.setText(getShowAddressOrName(mDates.get(position).getName(), position));
-		mHolder.type.setText(getBlueTypeName(mDates.get(position).getType()));
+		mHolder.name.setText(getShowAddressOrName(mDates.get(position).getDevice().getName(), position));
+		mHolder.type.setText(getBlueTypeName(mDates.get(position).getDevice().getType()));
 
 		return convertView;
 	}
@@ -70,9 +70,9 @@ public class HelmetBluetoothScanAdapter extends BaseAdapter {
 
 	public String getShowAddressOrName(String input, int position) {
 		if ("".equals(input) || input == null) {
-			return mDates.get(position).getAddress();
+			return mDates.get(position).getDevice().getAddress();
 		} else {
-			return mDates.get(position).getName();
+			return mDates.get(position).getDevice().getName();
 		}
 	}
 

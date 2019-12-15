@@ -10,7 +10,9 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.pm.PackageManager;
+import android.net.wifi.WifiManager;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.Button;
@@ -18,7 +20,7 @@ import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
-public class ServerActivity extends Activity implements OnClickListener {
+public class ServerActivity extends HelmetBaseActivity implements OnClickListener {
 
 	private static final String TAG = "ServerActivity";
 
@@ -52,7 +54,7 @@ public class ServerActivity extends Activity implements OnClickListener {
 				}
 			} else if (HelmetToolUtils.BLE_SERVICE_SEND_CONTENTS_ACTION.equals(intent.getAction())) {
 				byte[] recevice_data = intent.getByteArrayExtra(HelmetToolUtils.BLE_SERVICE_SEND_CONTENTS_DATA);
-				Toast.makeText(ServerActivity.this, new String(recevice_data), Toast.LENGTH_SHORT).show();
+				Log.i(TAG, "service receive data = "+new String(recevice_data));
 			}
 		}
 	};
@@ -74,9 +76,14 @@ public class ServerActivity extends Activity implements OnClickListener {
 		send_server_data_btn.setOnClickListener(this);
 
 		mManager = (BluetoothManager) getSystemService(Context.BLUETOOTH_SERVICE);
+		wifimanager = (WifiManager) getSystemService(Context.WIFI_SERVICE);
 
 		HelmetToolUtils.initBleService(this, HelmetServicetBleConntectService.class);
+		
+		Log.i(TAG, "MAC = "+HelmetToolUtils.getMacAddress(wifimanager));
 	}
+	
+	WifiManager wifimanager;
 
 	@Override
 	protected void onResume() {
@@ -151,7 +158,7 @@ public class ServerActivity extends Activity implements OnClickListener {
 			HelmetToolUtils.stopBleServiceAdvertising(this);
 			break;
 		case R.id.send_server_btn:
-			HelmetToolUtils.sendBleServiceData(this, et_text.getText().toString());
+			HelmetToolUtils.sendBleServiceData(this, et_text.getText().toString(),HelmetToolUtils.HELMET_DEFAULT_TEXT_TYPE);
 			break;
 		default:
 			break;

@@ -4,8 +4,8 @@ import java.util.ArrayList;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.bluetooth.BluetoothAdapter;
-import android.bluetooth.BluetoothDevice;
 import android.bluetooth.BluetoothManager;
+import android.bluetooth.le.ScanResult;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.DialogInterface;
@@ -14,6 +14,7 @@ import android.content.IntentFilter;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
+import android.util.Log;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.AdapterView;
@@ -24,7 +25,7 @@ import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
-public class ClientActivity extends Activity implements OnClickListener {
+public class ClientActivity extends HelmetBaseActivity implements OnClickListener {
 
 	private static final String TAG = "ClientActivity";
 	private EditText edit_text;
@@ -32,17 +33,14 @@ public class ClientActivity extends Activity implements OnClickListener {
 	private TextView tv_status;
 	private ListView lv_list;
 
-	private Context mContext;
-
 	private BluetoothManager mManager;
 	private BluetoothAdapter mAdapter;
 
 	private MyDialogListener mListener = new MyDialogListener();
 
-	private ArrayList<BluetoothDevice> devices = new ArrayList<BluetoothDevice>();
-	private ArrayList<String> names = new ArrayList<String>();
+	private ArrayList<ScanResult> Results = new ArrayList<ScanResult>();
+	private ArrayList<String> devices_names = new ArrayList<String>();
 	private HelmetBluetoothScanAdapter mScanAdapter;
-	private BluetoothDevice mBluetoothDevice = null;
 	private Handler mHandler = new Handler() {
 
 		@Override
@@ -51,14 +49,20 @@ public class ClientActivity extends Activity implements OnClickListener {
 			super.handleMessage(msg);
 			switch (msg.what) {
 			case HelmetToolUtils.REFLASH_STATUS_SUCCESSFUL_NUM:
+				tv_status.setText(HelmetToolUtils.getConnectionStatus(2));
+				stop_scan_btn.setEnabled(false);
 				disconnect_btn.setEnabled(true);
+				break;
+			case HelmetToolUtils.REFLASH_STATUS_FAILED_NUM:
+				tv_status.setText(HelmetToolUtils.getConnectionStatus(0));
+//				stop_scan_btn.setEnabled(true);
+				disconnect_btn.setEnabled(false);
 				break;
 
 			default:
 				break;
 			}
 		}
-
 	};
 
 	private BroadcastReceiver mReceiver = new BroadcastReceiver() {
@@ -67,29 +71,33 @@ public class ClientActivity extends Activity implements OnClickListener {
 		public void onReceive(Context context, Intent intent) {
 			// TODO Auto-generated method stub
 			if (HelmetToolUtils.BLE_SCAN_FOND_ACTION.equals(intent.getAction())) {
-				BluetoothDevice mDevice = intent.getParcelableExtra("service_fond_device");
-				if (mDevice.getName() != null && !(mDevice.getName()).equals("")) {
-					if (!names.contains(mDevice.getName())) {
+				ScanResult mDevice = intent.getParcelableExtra("service_fond_result");
+				if (mDevice.getDevice().getName() != null && !(mDevice.getDevice().getName()).equals("")) {
+					if (!devices_names.contains(mDevice.getDevice().getName())) {
 
-						devices.add(mDevice);
+						Results.add(mDevice);
 						stop_scan_btn.setEnabled(true);
-						mScanAdapter = new HelmetBluetoothScanAdapter(context, devices);
+						mScanAdapter = new HelmetBluetoothScanAdapter(context, Results);
 
 						lv_list.setAdapter(mScanAdapter);
 						mScanAdapter.notifyDataSetChanged();
 					}
 				}
-				names.add(mDevice.getName());
+				devices_names.add(mDevice.getDevice().getName());
 
 				stop_scan_btn.setEnabled(true);
 				lv_list.setAdapter(mScanAdapter);
 			} else if (HelmetToolUtils.BLE_SERVICE_CONNECTED_CHANGE_ACTION.equals(intent.getAction())) {
 				int newState = intent.getIntExtra(HelmetToolUtils.BLE_SERVICE_CONNECTED_CHANGE_VALUES,
 						HelmetToolUtils.HELMET_DEFAULT_NULL_NUM);
-				tv_status.setText(HelmetToolUtils.getConnectionStatus(newState));
+				if(newState == 2){
+					mHandler.sendEmptyMessage(HelmetToolUtils.REFLASH_STATUS_SUCCESSFUL_NUM);
+				}else{
+					mHandler.sendEmptyMessage(HelmetToolUtils.REFLASH_STATUS_FAILED_NUM);
+				}
 			} else if (HelmetToolUtils.BLE_CLIENT_SEND_CONTENTS_ACTION.equals(intent.getAction())) {
 				String recevice_data = intent.getStringExtra(HelmetToolUtils.BLE_CLIENT_SEND_CONTENTS_DATA);
-				Toast.makeText(ClientActivity.this, recevice_data, Toast.LENGTH_SHORT).show();
+				Log.i(TAG, "client recevice data = "+recevice_data);
 			}
 		}
 	};
@@ -126,8 +134,8 @@ public class ClientActivity extends Activity implements OnClickListener {
 	}
 
 	private void stop_scan() {
-		names.clear();
-		devices.clear();
+		devices_names.clear();
+		Results.clear();
 		lv_list.setAdapter(null);
 		stop_scan_btn.setEnabled(false);
 		HelmetToolUtils.stopScanBleDeviceIntent(this);
@@ -153,7 +161,7 @@ public class ClientActivity extends Activity implements OnClickListener {
 			@Override
 			public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
 				// TODO Auto-generated method stub
-				HelmetToolUtils.connectRemoteDeviceIntent(ClientActivity.this, devices.get(position));
+				HelmetToolUtils.connectRemoteDeviceIntent(ClientActivity.this, Results.get(position));
 			}
 		});
 
@@ -161,7 +169,7 @@ public class ClientActivity extends Activity implements OnClickListener {
 	}
 
 	public void buildAlertDialog() {
-		AlertDialog.Builder mDialog = new AlertDialog.Builder(mContext);
+		AlertDialog.Builder mDialog = new AlertDialog.Builder(ClientActivity.this);
 		mDialog.setMessage(R.string.system_text_openblue_dialog_message);
 		mDialog.setNegativeButton(android.R.string.cancel, mListener);
 		mDialog.setPositiveButton(android.R.string.ok, mListener);
@@ -198,9 +206,9 @@ public class ClientActivity extends Activity implements OnClickListener {
 		// TODO Auto-generated method stub
 		switch (v.getId()) {
 		case R.id.scan_btn:
-			HelmetToolUtils.scanBleDeviceIntent(this);
-			names.clear();
-			devices.clear();
+			HelmetToolUtils.scanBleDeviceIntent(ClientActivity.this);
+			devices_names.clear();
+			Results.clear();
 			lv_list.setAdapter(null);
 			break;
 		case R.id.stop_scan_btn:
@@ -210,7 +218,9 @@ public class ClientActivity extends Activity implements OnClickListener {
 			HelmetToolUtils.sendBleData(this, edit_text.getText().toString());
 			break;
 		case R.id.disconnect_btn:
-			HelmetToolUtils.disconnectRemoteDeviceIntent(this);
+			HelmetToolUtils.disconnectRemoteDeviceIntent(ClientActivity.this);
+			mHandler.sendEmptyMessage(HelmetToolUtils.REFLASH_STATUS_FAILED_NUM);
+			stop_scan();
 			break;
 		default:
 			break;
@@ -221,8 +231,8 @@ public class ClientActivity extends Activity implements OnClickListener {
 	protected void onPause() {
 		// TODO Auto-generated method stub
 		super.onPause();
-		if (devices != null) {
-			devices.clear();
+		if (Results != null) {
+			Results.clear();
 		}
 	}
 
